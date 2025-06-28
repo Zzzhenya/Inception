@@ -5,4 +5,7 @@ build:
 	docker build -t nginx srcs/requirements/nginx
 
 run:
-	docker run nginx:latest
+	docker run nginx
+
+stop:
+	docker stop nginx
