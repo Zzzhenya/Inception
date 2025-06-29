@@ -1,6 +1,8 @@
-all: start
-	
+all: compose
 
+compose:
+	docker compose -f srcs/docker-compose.yml up --build -d
+	
 build_nginx:
 	docker build -t nginx srcs/requirements/nginx
 
@@ -9,20 +11,23 @@ build_mariadb:
 
 start_nginx: build_nginx
 	#docker run --name nginxcontainer nginx
-	docker run -v website:/home/login/data nginx:latest
+	docker run -v website:/home/login/data --network=my-bridge-network nginx:latest
 
 start_mariadb: build_mariadb
-	docker run mariadb:latest
+	docker run --network=my-bridge-network mariadb:latest
 
 build: build_nginx build_mariadb
+
+network:
+	docker network create -d bridge my-bridge-network
 
 debug: build_mariadb
 	#docker run -it -v databse:/home/login/data nginx:latest /bin/bash
 	docker run -it -v database:/home/login/data mariadb:latest /bin/bash
 
-start: start_mariadb start_nginx 
+start: network start_mariadb start_nginx 
 
 stop:
 	docker ps
-	docker stop nginx:latest
-	docker stop mariadb:latest
+	docker stop nginx
+	docker stop mariadb

@@ -62,4 +62,10 @@
 
 	https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11
 
+* Docker compose version
+
+	https://stackoverflow.com/questions/76156527/what-does-the-first-line-in-the-docker-compose-yml-file-that-specifies-the-ve
+
+
+* 
 
