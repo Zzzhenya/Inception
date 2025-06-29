@@ -4,9 +4,12 @@ all:
 build:
 	docker build -t nginx srcs/requirements/nginx
 
+debug:
+	docker run -it -v databse:/home/login/data nginx:latest /bin/bash
+
 start:
 	#docker run --name nginxcontainer nginx
-	docker run nginx:latest
+	docker run -v databse:/home/login/data nginx:latest
 
 stop:
 	docker ps
