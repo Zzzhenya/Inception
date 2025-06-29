@@ -4,8 +4,10 @@ all:
 build:
 	docker build -t nginx srcs/requirements/nginx
 
-run:
-	docker run nginx
+start:
+	#docker run --name nginxcontainer nginx
+	docker run nginx:latest
 
 stop:
-	docker stop nginx
+	docker ps
+	docker stop nginx:latest
