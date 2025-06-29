@@ -54,5 +54,12 @@
 		https://security.stackexchange.com/questions/203684/who-is-responsible-for-choosing-a-tls-cipher-suite-the-client-or-the-server
 
 
+* Mariadb abort error:
+
+	https://stackoverflow.com/questions/43593736/used-chown-for-var-lib-mysql-to-change-owner-from-root-now-getting-error-1049
+
+	RUN mkdir -p /var/lib/mysql /var/run/mysqld && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
+
+	https://www.digitalocean.com/community/tutorials/how-to-install-mariadb-on-debian-11
 
 
