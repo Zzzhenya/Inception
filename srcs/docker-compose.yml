@@ -3,7 +3,12 @@ version: '2'
 services:
   nginx:
     container_name: nginx
-    build: requirements/nginx
+    env_file:
+      - .env
+    build:
+      context: requirements/nginx
+      dockerfile: Dockerfile
+        # - DEBIAN_VERSION=${DEBIAN_VERSION?Variable DEBIAN_VERSION not set}
     image: nginx
     ports:
       - "443:443"
@@ -11,8 +16,10 @@ services:
 
   mariadb:
     container_name: mariadb
-    build: requirements/mariadb
+    env_file:
+      - .env
+    build:
+      context: requirements/mariadb
+      dockerfile: Dockerfile
     image: mariadb
-    ports:
-      - "3306:3306"
     restart: always

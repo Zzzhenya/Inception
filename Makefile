@@ -2,6 +2,7 @@ all: compose
 
 compose:
 	docker compose -f srcs/docker-compose.yml up --build -d
+	docker ps | wc -l
 	
 build_nginx:
 	docker build -t nginx srcs/requirements/nginx
@@ -28,6 +29,7 @@ debug: build_mariadb
 start: network start_mariadb start_nginx 
 
 stop:
-	docker ps
-	docker stop nginx
-	docker stop mariadb
+	@docker ps | wc -l
+	@docker stop nginx
+	@docker stop mariadb
+	@docker ps | wc -l
