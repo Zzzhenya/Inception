@@ -24,7 +24,7 @@ network:
 
 debug: build_mariadb
 	#docker run -it -v databse:/home/login/data nginx:latest /bin/bash
-	docker run -it -v database:/home/login/data mariadb:latest /bin/bash
+	docker run --env-file srcs/.env -it -v database:/home/login/data mariadb:latest /bin/bash
 
 start: network start_mariadb start_nginx 
 
