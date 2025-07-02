@@ -13,6 +13,14 @@ COPY conf/50-server.cnf  /etc/mysql/mariadb.conf.d/50-server.cnf
 
 RUN mkdir -p /var/lib/mysql /var/run/mysqld && chown -R mysql:mysql /var/lib/mysql /var/run/mysqld
 
+COPY tools/setup_mariadb.sh /temp/setup_mariadb.sh
+
+RUN chmod +x /temp/setup_mariadb.sh
+
 EXPOSE 3306
 
-CMD ["mysqld"]
+#CMD ["mysqld"]
+
+#ENTRYPOINT ["bash", "/temp/setup_mariadb.sh"]
+
+CMD ["bash", "/temp/setup_mariadb.sh"]
