@@ -67,5 +67,9 @@
 	https://stackoverflow.com/questions/76156527/what-does-the-first-line-in-the-docker-compose-yml-file-that-specifies-the-ve
 
 
-* 
+* ENTRYPOINT
+
+	www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/
+
+
 
