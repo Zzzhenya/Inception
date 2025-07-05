@@ -19,5 +19,51 @@ else
 	echo "Launching mariadb..."
 	#mysql -u root 
 	#-p
-	mysqld
 fi
+
+# touch /temp/config.sql
+
+cat << EOF > /temp/config.sql
+
+CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
+CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
+GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+EOF
+#FLUSH PRIVILEGES;
+
+cat /temp/config.sql
+echo "one"
+#service mysql start &
+# mysqld &
+# echo "two"
+# kill $(cat /var/run/mysqld/mysqld.pid)
+
+# cat /temp/config.sql
+
+echo "three"
+
+# 
+
+mysqld &
+
+sleep 10
+
+mysql  < /temp/config.sql
+
+kill $(cat /var/run/mysqld/mysqld.pid)
+
+# fg
+
+sleep 2
+
+#kill $(cat /var/run/mysqld/mysqld.pid)
+
+mysqld
+
+
+
+
+#mysql -u root < /temp/config.sql
+
+#mariadbd &
