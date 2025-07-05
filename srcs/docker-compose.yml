@@ -12,9 +12,12 @@ services:
     image: nginx
     ports:
       - "443:443"
+    depends_on:
+      - mariadb
     restart: always
 
   mariadb:
+    # mem_limit: 1gb
     container_name: mariadb
     env_file:
       - .env
@@ -23,3 +26,13 @@ services:
       dockerfile: Dockerfile
     image: mariadb
     restart: always
+    volumes:
+      - mariadb:/var/lib/mysql
+
+volumes:
+  mariadb:
+    driver: local
+    driver_opts:
+      type: none
+      device: requirements/volumes/mariadb
+      o: bind
