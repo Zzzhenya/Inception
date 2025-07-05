@@ -1,2 +1,4 @@
 **/*.env
+**/volumes/**
+srcs/requirements/tools/
 en.subject.pdf
