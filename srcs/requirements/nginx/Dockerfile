@@ -23,8 +23,11 @@ RUN openssl req -x509 -nodes -keyout /etc/ssl/nginx/inception.key -out /etc/ssl/
 
 #RUN rm -rf /etc/nginx/nginx.conf
 
-COPY conf/nginx.conf /etc/nginx/nginx.conf
+#COPY conf/nginx.conf /etc/nginx/nginx.conf
+COPY conf/copy.conf /etc/nginx/sites-enabled/nginx.conf
+COPY conf/copy.conf /etc/nginx/sites-available/nginx.conf
 
 EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]
+#CMD ["nginx"]

@@ -13,8 +13,12 @@ services:
     ports:
       - "443:443"
     depends_on:
-      - mariadb
-    restart: always
+      - wordpress
+    restart: on-failure
+    volumes:
+      - wordpress:/home/login/data
+    networks:
+      - all
 
   mariadb:
     # mem_limit: 1gb
@@ -25,9 +29,29 @@ services:
       context: requirements/mariadb
       dockerfile: Dockerfile
     image: mariadb
-    restart: always
+    restart: on-failure
     volumes:
-      - mariadb:/var/lib/mysql
+      #- mariadb:/var/lib/mysql
+      - mariadb:/home/login/data
+    networks:
+      - all
+
+  wordpress:
+    container_name: wordpress
+    env_file:
+      - .env
+    build:
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+    image: wordpress
+    restart: on-failure
+    volumes:
+      # - wordpress:/var/www/html
+      - wordpress:/home/login/data
+    depends_on:
+      - mariadb
+    networks:
+      - all
 
 volumes:
   mariadb:
@@ -36,3 +60,15 @@ volumes:
       type: none
       device: requirements/volumes/mariadb
       o: bind
+
+  wordpress:
+    driver: local
+    driver_opts:
+      type: none
+      device: requirements/volumes/wordpress
+      o: bind
+
+networks:
+  all:
+    driver: bridge
+

@@ -71,5 +71,9 @@
 
 	www.docker.com/blog/docker-best-practices-choosing-between-run-cmd-and-entrypoint/
 
+* Cannot start php, unable to create PID file
 
+	https://stackoverflow.com/questions/45540492/cannot-start-php-because-it-is-unable-to-create-pid-file
+
+* 
 

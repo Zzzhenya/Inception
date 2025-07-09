@@ -12,6 +12,12 @@ build_nginx:
 build_mariadb:
 	docker build -t mariadb srcs/requirements/mariadb
 
+build_wordpress:
+	docker build -t wordpress srcs/requirements/wordpress
+
+start_wordpress: build_wordpress
+	docker run --env-file srcs/.env  wordpress:latest
+
 start_nginx: build_nginx
 	#docker run --name nginxcontainer nginx
 	docker run --env-file srcs/.env  nginx:latest #--network=my-bridge-network
@@ -45,8 +51,9 @@ start: start_mariadb start_nginx #network
 
 stop:
 	@-docker ps | wc -l
-	@-docker stop nginx
+	@-docker stop wordpress
 	@-docker stop mariadb
+	@-docker stop nginx
 	@-docker ps | wc -l
 
 clean: stop
@@ -55,6 +62,14 @@ clean: stop
 	-docker network prune -f
 
 fclean: stop
-	-docker system prune -af
+	-docker system prune -a -f
+	-docker volume rm srcs_mariadb
 	-clean
 
+status:
+	docker ps
+
+log:
+	-docker logs nginx
+	-docker logs mariadb 
+	-docker logs wordpress
