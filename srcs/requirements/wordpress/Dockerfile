@@ -23,7 +23,9 @@ COPY tools/init_script.sh temp/init_script.sh
 
 RUN chmod +x temp/init_script.sh
 
-RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
+#RUN curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar 
+
+#RUN chmod +x wp-cli.phar
 
 #CMD ["php-fpm7.4", "-F"]
 CMD ["bash", "/temp/init_script.sh"]
