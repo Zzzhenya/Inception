@@ -19,7 +19,7 @@ services:
       #- wordpress:/home/login/data
       - wordpress:/var/www/html
     networks:
-      - all
+      - inception
 
   mariadb:
     # mem_limit: 1gb
@@ -35,7 +35,7 @@ services:
       - mariadb:/var/lib/mysql
       # - mariadb:/home/login/data
     networks:
-      - all
+      - inception
 
   wordpress:
     container_name: wordpress
@@ -52,7 +52,7 @@ services:
     depends_on:
       - mariadb
     networks:
-      - all
+      - inception
 
 volumes:
   mariadb:
@@ -70,6 +70,6 @@ volumes:
       o: bind
 
 networks:
-  all:
+  inception:
     driver: bridge
 
