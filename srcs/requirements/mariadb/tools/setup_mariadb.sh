@@ -2,6 +2,8 @@
 
 echo "Setting up mariadb..."
 
+set -e
+
 if [ -z "${MYSQL_DATABASE}" ] ||
 	[ -z "${MYSQL_ROOT_PASSWORD}" ] ||
 	[ -z "${MYSQL_USER}" ] || [ -z "${MYSQL_PASSWORD}" ];
@@ -21,7 +23,9 @@ else
 	#-p
 fi
 
-# touch /temp/config.sql
+if [ ! -f /var/lib/mysql/success.txt ]; then
+
+rm -rf /temp/config.sql
 
 cat << EOF > /temp/config.sql
 
@@ -47,7 +51,7 @@ echo "three"
 
 mysqld &
 
-sleep 10
+sleep 2
 
 mysql  < /temp/config.sql
 
@@ -55,9 +59,13 @@ kill $(cat /var/run/mysqld/mysqld.pid)
 
 # fg
 
-sleep 2
+sleep 10
 
 #kill $(cat /var/run/mysqld/mysqld.pid)
+
+touch /var/lib/mysql/success.txt
+
+fi
 
 mysqld
 
