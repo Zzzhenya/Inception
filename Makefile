@@ -64,6 +64,8 @@ clean: stop
 fclean: stop
 	-docker system prune -a -f
 	-docker volume rm srcs_mariadb
+	-docker volume rm wordpress
+	-docker volume rm mariadb
 	-clean
 
 status:
