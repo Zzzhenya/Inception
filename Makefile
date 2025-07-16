@@ -64,6 +64,7 @@ clean: stop
 fclean: stop
 	-docker system prune -a -f
 	-docker volume rm srcs_mariadb
+	-docker volume rm srcs_wordpres
 	-docker volume rm wordpress
 	-docker volume rm mariadb
 	-clean
@@ -75,3 +76,4 @@ log:
 	-docker logs nginx
 	-docker logs mariadb 
 	-docker logs wordpress
+
