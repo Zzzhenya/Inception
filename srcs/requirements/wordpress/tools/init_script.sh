@@ -2,7 +2,7 @@
 
 #php-fpm7.4 -F
 set -x
-#set -e
+set -e
 
 echo "wordpress 1"
 
