@@ -2,7 +2,10 @@
 
 echo "Setting up mariadb..."
 
+sleep 2
+
 set -e
+set -x
 
 if [ -z "${MYSQL_DATABASE}" ] ||
 	[ -z "${MYSQL_ROOT_PASSWORD}" ] ||
@@ -32,30 +35,34 @@ cat << EOF > /temp/config.sql
 CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
 CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
 GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';\
+FLUSH PRIVILEGES;
 EOF
-#FLUSH PRIVILEGES;
 
-cat /temp/config.sql
+#FLUSH PRIVILEGES;
+#cat /temp/config.sql
 echo "one"
 #service mysql start &
 # mysqld &
 # echo "two"
 # kill $(cat /var/run/mysqld/mysqld.pid)
 
-# cat /temp/config.sql
+#cat /temp/config.sql
 
-echo "three"
+
 
 # 
 
-mysqld &
+mysqld --innodb-buffer-pool-load-at-startup=0 &
 
 sleep 2
+echo "two"
 
 mysql  < /temp/config.sql
 
 kill $(cat /var/run/mysqld/mysqld.pid)
+
+echo "three"
 
 # fg
 
@@ -66,6 +73,7 @@ sleep 10
 touch /var/lib/mysql/success.txt
 
 fi
+
 
 mysqld
 
