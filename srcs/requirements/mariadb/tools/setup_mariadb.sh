@@ -5,7 +5,7 @@ echo "Setting up mariadb..."
 sleep 2
 
 set -e
-set -x
+# set -x
 
 if [ -z "${MYSQL_DATABASE}" ] ||
 	[ -z "${MYSQL_ROOT_PASSWORD}" ] ||
@@ -17,13 +17,11 @@ then
 	fi
 	if [ -z "${MYSQL_USER}" ]; then echo "Error: mandetory field \"username\" is missing"
 	fi
-	if [ -z "${MYSQL_PASSWORD}" ]; then echo "Error: mandetory field \"usaer password\" is missing"
+	if [ -z "${MYSQL_PASSWORD}" ]; then echo "Error: mandetory field \"user password\" is missing"
 	fi
 	exit 1
 else
 	echo "Launching mariadb..."
-	#mysql -u root 
-	#-p
 fi
 
 if [ ! -f /var/lib/mysql/success.txt ]; then
@@ -39,47 +37,26 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';\
 FLUSH PRIVILEGES;
 EOF
 
-#FLUSH PRIVILEGES;
-#cat /temp/config.sql
-echo "one"
-#service mysql start &
-# mysqld &
-# echo "two"
-# kill $(cat /var/run/mysqld/mysqld.pid)
-
-#cat /temp/config.sql
-
-
-
-# 
+echo "1"
 
 mysqld --innodb-buffer-pool-load-at-startup=0 &
 
 sleep 2
-echo "two"
+echo "2"
 
 mysql  < /temp/config.sql
 
 kill $(cat /var/run/mysqld/mysqld.pid)
 
-echo "three"
+echo "3"
 
 # fg
 
-sleep 10
-
-#kill $(cat /var/run/mysqld/mysqld.pid)
+sleep 2
 
 touch /var/lib/mysql/success.txt
 
 fi
 
-
 mysqld
 
-
-
-
-#mysql -u root < /temp/config.sql
-
-#mariadbd &

@@ -1,43 +1,60 @@
 #!/bin/bash
 
-#php-fpm7.4 -F
-set -x
+#set -x
 set -e
+
+#rm -rf /var/www/html/*
+
+if [ -z "${MYSQL_DATABASE}" ] ||
+	[ -z "${MYSQL_ROOT_PASSWORD}" ] ||
+	[ -z "${MYSQL_USER}" ] || [ -z "${MYSQL_PASSWORD}" ];
+then
+	echo "MYSQL env data missing"
+	exit 1
+elif [ -z "${ADMIN_USER}" ] || [ -z "${DOMAIN_NAME}" ] || [ -z "${ADMIN_PASSWORD}" ] || [ -z "${ADMIN_EMAIL}" ];
+then
+	echo "Admin env data missing"
+	exit 2
+elif [ -z "${WP_USER}" ] || [ -z "${WP_USER_EMAIL}" ] || [ -z "${WP_USER_PASSWORD}" ];
+then
+	echo "WP User env data missing"
+	exit 3
+else
+	echo "Launching mariadb..."
+	#mysql -u root 
+	#-p
+fi
+
 
 echo "wordpress 1"
 
-sleep 2
-# chmod +x wp-cli.phar
+#|| :
 
-# if [ ! -f /var/www/html/wp-config.php ]; then
+sleep 2
+
 if [ ! -f /var/www/html/success.txt ]; then
 	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 	chmod +x wp-cli.phar
 	mv wp-cli.phar /usr/local/bin/wp
 	echo "1"
 
-	#./wp-cli.phar core download https://wordpress.org/latest.tar.gz --allow-root --path=/var/www/html || :
-
 	wp core download https://wordpress.org/latest.tar.gz --allow-root --path=/var/www/html
+
 	echo "2"
-	env
+	# env
 	wp config create --allow-root \
 		--dbname=${MYSQL_DATABASE} \
 		--dbuser=${MYSQL_USER} \
 		--dbpass=${MYSQL_PASSWORD} \
 		--dbhost=mariadb \
 		--path=/var/www/html
-	# ./wp-cli.phar config create --allow-root \
-	# 	--dbname=${MYSQL_DATABASE} \
-	# 	--dbuser=${MYSQL_USER} \
-	# 	--dbpass=${MYSQL_PASSWORD} \
-	# 	--dbhost=localhost \
-	# 	--path=/var/www/html
-
+	
 	sleep 2
 	echo "3"
-	if wp user get ${ADMIN_USER} >/dev/null 2>&1; then
-		echo "user exist"
+
+	if wp user get ${ADMIN_USER} --allow-root --path=/var/www/html >/dev/null 2>&1; then
+		# wp user get ${ADMIN_USER} --allow-root --path=/var/www/html
+		echo "admin user exists"
 	else
 		wp core install --allow-root \
 		 --url=${DOMAIN_NAME} \
@@ -45,53 +62,29 @@ if [ ! -f /var/www/html/success.txt ]; then
 		 --admin_password=${ADMIN_PASSWORD} --admin_email=${ADMIN_EMAIL} \
 		 --path=/var/www/html --skip-email
 	fi
-		# ./wp-cli.phar core install --allow-root \
-		#  --url=${DOMAIN_NAME} \
-		#  --title=Inception --admin_user=${ADMIN_USER} \
-		#  --admin_password=${ADMIN_PASSWORD} --admin_email=${ADMIN_EMAIL} \
-		#  --path=/var/www/html --skip-email
 
-	 sleep 2
-	 echo "4"
-	# wp user create --allow-root --path=/var/www/html --user_pass= --role=author wpuser1
-	# usage: wp user create <user-login> <user-email> 
-	# [--role=<role>] 
-	# [--user_pass=<password>] 
-	# [--user_registered=<yyyy-mm-dd-hh-ii-ss>] 
-	# [--display_name=<name>] 
-	# [--user_nicename=<nice_name>] 
-	# [--user_url=<url>] 
-	# [--nickname=<nickname>] 
-	# [--first_name=<first_name>] 
-	# [--last_name=<last_name>] 
-	# [--description=<description>] 
-	# [--rich_editing=<rich_editing>] 
-	# [--send-email] 
-	# [--porcelain]
-	if wp user get ${WP_USER} >/dev/null 2>&1; then
-		echo "user exists"
+	sleep 2
+	echo "4"
+
+	if wp user get ${WP_USER} --allow-root --path=/var/www/html >/dev/null 2>&1; then
+		# wp user get ${WP_USER} --allow-root --path=/var/www/html
+		echo "wordpress user exists"
 	else
 		wp user create --allow-root ${WP_USER} ${WP_USER_EMAIL} \
 		 --path=/var/www/html \
 		 --user_pass=${WP_USER_PASSWORD} \
 		 --role=author
-
-
-		# ./wp-cli.phar user create --allow-root \
-		#  --path=/var/www/html \
-		#  --user_pass=${WP_PASSWORD} \
-		#  --role=author ${WP_USER} ${WP_EMAIL}
-
-		 echo "5"
 	fi
 
-	 touch /var/www/html/success.txt
-	 echo "6"
+	echo "5"
+
+	touch /var/www/html/success.txt
+	echo "6"
 else
-	echo "bash_script: wordpress available" 
+	echo "bash_script: wordpress available and already setup" 
 fi 
 
-echo "100"
+echo "7"
 
 # rm -rf /var/www/html/wp-config.php
 
