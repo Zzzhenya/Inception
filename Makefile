@@ -3,6 +3,7 @@ HERE = $(PWD)
 all: compose
 
 compose:
+	mkdir -p /home/sde-silv/data
 	mkdir -p /home/sde-silv/data/wordpress
 	mkdir -p /home/sde-silv/data/mariadb
 	docker compose -f srcs/docker-compose.yml up --build -d
@@ -53,23 +54,28 @@ start: start_mariadb start_nginx #network
 
 stop:
 	@-docker ps | wc -l
-	@-docker stop wordpress
-	@-docker stop mariadb
-	@-docker stop nginx
+	
+	docker compose -f srcs/docker-compose.yml stop
+	#docker compose stop
+	#@-docker stop nginx
+	#@-docker stop wordpress
+	#@-docker stop mariadb
 	@-docker ps | wc -l
 
-clean: stop
-	-docker image prune -af
-	-docker volume prune -af
-	-docker network prune -f
+#clean: stop
+	#-docker image prune -af
+	#-docker volume prune -af
+	#-docker network prune -f
 
 fclean: stop
-	-docker system prune -a -f
-	-docker volume rm srcs_mariadb
-	-docker volume rm srcs_wordpress
-	-docker volume rm wordpress
-	-docker volume rm mariadb
-	-clean
+	#docker compose down
+	docker compose -f srcs/docker-compose.yml down
+	#-docker system prune -a -f
+	#-docker volume rm srcs_mariadb
+	#-docker volume rm srcs_wordpress
+	#-docker volume rm wordpress
+	#-docker volume rm mariadb
+	#-clean
 
 status:
 	docker ps
