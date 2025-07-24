@@ -3,9 +3,11 @@ HERE = $(PWD)
 all: compose
 
 compose:
+	mkdir -p /home/sde-silv/data/wordpress
+	mkdir -p /home/sde-silv/data/mariadb
 	docker compose -f srcs/docker-compose.yml up --build -d
 	docker ps | wc -l
-	
+
 build_nginx:
 	docker build -t nginx srcs/requirements/nginx
 
