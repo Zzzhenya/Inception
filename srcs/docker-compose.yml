@@ -59,14 +59,16 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: requirements/volumes/mariadb
+      # device: requirements/volumes/mariadb
+      device: /home/sde-silv/data/mariadb
       o: bind
 
   wordpress:
     driver: local
     driver_opts:
       type: none
-      device: requirements/volumes/wordpress
+      device: /home/sde-silv/data/wordpress
+      #device: requirements/volumes/wordpress
       o: bind
 
 networks:
