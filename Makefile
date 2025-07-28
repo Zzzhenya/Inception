@@ -19,9 +19,11 @@ up: compose
 down: stop
 	@read -p "Are you sure? [y/N] " ans && ans=$${ans:-N} ; \
     if [ $${ans} = y ] || [ $${ans} = Y ]; then \
-        printf "YES" ; \
+        printf "YES" ;
 		docker compose -f srcs/docker-compose.yml down ;\
-		-docker volume prune -af \
+		docker volume prune -af ;\
+		docker volume rm srcs_wordpress ;\
+		docker volume rm srcs_mariadb ;\
     else \
         printf "NO" ; \
     fi
