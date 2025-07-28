@@ -15,17 +15,9 @@ RUN mkdir -p /var/lib/mysql /var/run/mysqld && chown -R mysql:mysql /var/lib/mys
 
 COPY tools/setup_mariadb.sh /temp/setup_mariadb.sh
 
-#COPY conf/setup_db.sql /temp/whatever.sql
-
 RUN chmod +x /temp/setup_mariadb.sh 
 
-#/temp/whatever.sql
-
 EXPOSE 3306
-
-#CMD ["mysqld"]
-
-#ENTRYPOINT ["bash", "/temp/setup_mariadb.sh"]
 
 CMD ["bash", "/temp/setup_mariadb.sh"]
 

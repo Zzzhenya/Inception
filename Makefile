@@ -1,81 +1,42 @@
-HERE = $(PWD)
+ENV_FILE = srcs/.env
+
+DATA_DIR = /home/sde-silv/data
 
 all: compose
 
-compose:
+$(DATA_DIR):
 	mkdir -p /home/sde-silv/data
 	mkdir -p /home/sde-silv/data/wordpress
 	mkdir -p /home/sde-silv/data/mariadb
+
+
+compose: $(ENV_FILE) $(DATA_DIR)
 	docker compose -f srcs/docker-compose.yml up --build -d
 	docker ps | wc -l
 
-build_nginx:
-	docker build -t nginx srcs/requirements/nginx
+up: compose
 
-build_mariadb:
-	docker build -t mariadb srcs/requirements/mariadb
+down: stop
+	@read -p "Are you sure? [y/N] " ans && ans=$${ans:-N} ; \
+    if [ $${ans} = y ] || [ $${ans} = Y ]; then \
+        printf "YES" ; \
+		docker compose -f srcs/docker-compose.yml down ;\
+		-docker volume prune -af \
+    else \
+        printf "NO" ; \
+    fi
 
-build_wordpress:
-	docker build -t wordpress srcs/requirements/wordpress
-
-start_wordpress: build_wordpress
-	docker run --env-file srcs/.env  wordpress:latest
-
-start_nginx: build_nginx
-	#docker run --name nginxcontainer nginx
-	docker run --env-file srcs/.env  nginx:latest #--network=my-bridge-network
-
-start_mariadb: build_mariadb
-	docker run --env-file srcs/.env -v $(HERE)/requirements/volumes/mariadb:/home/login/data mariadb:latest
-#--network=my-bridge-network
-
-build: build_nginx build_mariadb
-
-#network:
-#	docker network create -d bridge my-bridge-network
-
-#docker run --mount type=volume,src=myvolume,dst=/data,ro,volume-subpath=/foo
-
-debug: build_mariadb
-	#echo $(HERE)
-	#build_mariadb
-	#docker run -it -v databse:/home/login/data nginx:latest /bin/bash
-	docker run --env-file srcs/.env -it -v $(HERE)requirements/volumes/mariadb:/home/login/data mariadb:latest /bin/bash
-	#docker run --env-file srcs/.env -it -mount type=volume database:/home/login/data mariadb:latest /bin/bash
-	
-	#docker run -it --env-file srcs/.env -v $(HERE)requirements/volumes/mariadb:/home/login/data mariadb:latest /bin/bash
-
-test: compose #build_mariadb
-# 	docker run --env-file srcs/.env mariadb:latest
-	#docker run -it --env-file srcs/.env -v $(HERE)requirements/volumes/mariadb:/home/login/data mariadb:latest
-	docker exec -it mariadb /bin/bash
-
-start: start_mariadb start_nginx #network
+start:
+	docker compose -f srcs/docker-compose.yml start
 
 stop:
 	@-docker ps | wc -l
-	
 	docker compose -f srcs/docker-compose.yml stop
-	#docker compose stop
-	#@-docker stop nginx
-	#@-docker stop wordpress
-	#@-docker stop mariadb
 	@-docker ps | wc -l
 
-#clean: stop
-	#-docker image prune -af
-	#-docker volume prune -af
-	#-docker network prune -f
+clean: stop
 
-fclean: stop
-	#docker compose down
-	docker compose -f srcs/docker-compose.yml down
-	#-docker system prune -a -f
-	#-docker volume rm srcs_mariadb
-	#-docker volume rm srcs_wordpress
-	#-docker volume rm wordpress
-	#-docker volume rm mariadb
-	#-clean
+fclean: stop down
 
 status:
 	docker ps
@@ -85,3 +46,4 @@ log:
 	-docker logs mariadb 
 	-docker logs wordpress
 
+.PHONY: all compose up down start stop clean fclean status log

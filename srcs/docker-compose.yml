@@ -16,7 +16,6 @@ services:
       - wordpress
     restart: on-failure
     volumes:
-      #- wordpress:/home/login/data
       - wordpress:/var/www/html
     networks:
       - inception
@@ -33,7 +32,6 @@ services:
     restart: on-failure
     volumes:
       - mariadb:/var/lib/mysql
-      # - mariadb:/home/login/data
     networks:
       - inception
 
@@ -48,7 +46,6 @@ services:
     restart: on-failure
     volumes:
       - wordpress:/var/www/html
-      #- wordpress:/home/login/data
     depends_on:
       - mariadb
     networks:

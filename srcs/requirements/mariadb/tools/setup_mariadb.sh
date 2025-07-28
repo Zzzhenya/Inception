@@ -5,7 +5,7 @@ echo "Setting up mariadb..."
 sleep 2
 
 set -e
-# set -x
+set -x
 
 if [ -z "${MYSQL_DATABASE}" ] ||
 	[ -z "${MYSQL_ROOT_PASSWORD}" ] ||
@@ -33,30 +33,30 @@ cat << EOF > /temp/config.sql
 CREATE DATABASE IF NOT EXISTS $MYSQL_DATABASE;
 CREATE USER IF NOT EXISTS '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';
 GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_USER'@'%';
-ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';\
+ALTER USER 'root'@'localhost' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD';
 FLUSH PRIVILEGES;
 EOF
 
-echo "1"
+echo "launching mariadb in background"
 
 mysqld --innodb-buffer-pool-load-at-startup=0 &
 
 sleep 2
-echo "2"
+echo "setting up mariadb users"
 
 mysql  < /temp/config.sql
 
 kill $(cat /var/run/mysqld/mysqld.pid)
 
-echo "3"
-
-# fg
+echo "shutdown mariadb from background"
 
 sleep 2
 
 touch /var/lib/mysql/success.txt
 
 fi
+
+echo "relaunch mariadb with updated settings"
 
 mysqld
 

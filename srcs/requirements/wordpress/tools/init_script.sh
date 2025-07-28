@@ -3,7 +3,7 @@
 set -x
 set -e
 
-#rm -rf /var/www/html/*
+echo "Checking mandatory env variables"
 
 if [ -z "${MYSQL_DATABASE}" ] ||
 	[ -z "${MYSQL_ROOT_PASSWORD}" ] ||
@@ -26,39 +26,34 @@ else
 fi
 
 
-echo "wordpress 1"
-
-#|| :
-
+echo "setting up wordpress"
 sleep 2
 
 if [ ! -f /var/www/html/success.txt ]; then
+	echo "downloading wp cli"
 	wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-	#echo $?
 	chmod +x wp-cli.phar
-	#echo $?
 	mv wp-cli.phar /usr/local/bin/wp
-	#echo $?
-	echo "1"
 
+	echo "downloading wordpress"
 	wp core download https://wordpress.org/latest.tar.gz --allow-root --path=/var/www/html
-	#echo $?
-	echo "2"
-	#whoami
-	# env
+	
 	sleep 10
-	wp config create --allow-root \
-		--dbname=${MYSQL_DATABASE} \
-		--dbuser=${MYSQL_USER} \
-		--dbpass=${MYSQL_PASSWORD} \
-		--dbhost=mariadb \
-		--path=/var/www/html
-	#echo $?
+	echo "create wp config file"
+
+	if [ ! -f /var/www/html/wp-config.php ]; then
+		wp config create --allow-root \
+			--dbname=${MYSQL_DATABASE} \
+			--dbuser=${MYSQL_USER} \
+			--dbpass=${MYSQL_PASSWORD} \
+			--dbhost=mariadb \
+			--path=/var/www/html
+	fi
 	sleep 2
-	echo "3"
+
+	echo "create wp admin user"
 
 	if wp user get ${ADMIN_USER} --allow-root --path=/var/www/html >/dev/null 2>&1; then
-		# wp user get ${ADMIN_USER} --allow-root --path=/var/www/html
 		echo $?
 		echo "admin user exists"
 	else
@@ -67,46 +62,27 @@ if [ ! -f /var/www/html/success.txt ]; then
 		 --title=Inception --admin_user=${ADMIN_USER} \
 		 --admin_password=${ADMIN_PASSWORD} --admin_email=${ADMIN_EMAIL} \
 		 --path=/var/www/html --skip-email
-		
-		#echo $?
 	fi
 
 	sleep 2
-	echo "4"
+	echo "create wp user"
 
 	if wp user get ${WP_USER} --allow-root --path=/var/www/html >/dev/null 2>&1; then
-		#echo $?
-		# wp user get ${WP_USER} --allow-root --path=/var/www/html
 		echo "wordpress user exists"
 	else
 		wp user create --allow-root ${WP_USER} ${WP_USER_EMAIL} \
 		 --path=/var/www/html \
 		 --user_pass=${WP_USER_PASSWORD} \
 		 --role=author
-		#echo $?
 	fi
 
-	echo "5"
-
+	echo "complete setting up wordpress"
 	touch /var/www/html/success.txt
-	#echo $?
-	echo "6"
 else
 	echo "bash_script: wordpress available and already setup" 
 fi 
 
-echo "7"
-
-# rm -rf /var/www/html/wp-config.php
-
-# ./wp-cli.phar config create --allow-root \
-# 	--dbname=${MYSQL_DATABASE} \
-# 	--dbuser=${MYSQL_USER} \
-# 	--dbpass=${MYSQL_PASSWORD} \
-# 	--dbhost=mariadb \
-# 	--path=/var/www/html
-
-echo "4"
+echo "launch wordpress"
 
 php-fpm7.4 -F
-#echo $?
+
