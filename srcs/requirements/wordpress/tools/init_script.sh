@@ -20,9 +20,7 @@ then
 	echo "WP User env data missing"
 	exit 3
 else
-	echo "Launching mariadb..."
-	#mysql -u root 
-	#-p
+	echo "Launching wordpress..."
 fi
 
 
@@ -54,7 +52,6 @@ if [ ! -f /var/www/html/success.txt ]; then
 	echo "create wp admin user"
 
 	if wp user get ${ADMIN_USER} --allow-root --path=/var/www/html >/dev/null 2>&1; then
-		echo $?
 		echo "admin user exists"
 	else
 		wp core install --allow-root \

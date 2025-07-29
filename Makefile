@@ -17,15 +17,16 @@ compose: $(ENV_FILE) $(DATA_DIR)
 up: compose
 
 down: stop
-	@read -p "Are you sure? [y/N] " ans && ans=$${ans:-N} ; \
-    if [ $${ans} = y ] || [ $${ans} = Y ]; then \
-        printf "YES" ;
+	@-read -p "Are you sure? [y/N] " ans && ans=$${ans:-N} ;\
+    if [ $${ans} = y ] || [ $${ans} = Y ]; then\
+        printf "cleaning images and volumes...\n" ;\
 		docker compose -f srcs/docker-compose.yml down ;\
 		docker volume prune -af ;\
 		docker volume rm srcs_wordpress ;\
 		docker volume rm srcs_mariadb ;\
-    else \
-        printf "NO" ; \
+		docker system prune -a -f ;\
+    else\
+        printf "...cleaning aborted\n" ;\
     fi
 
 start:
@@ -41,7 +42,7 @@ clean: stop
 fclean: stop down
 
 status:
-	docker ps
+	docker compose -f srcs/docker-compose.yml ps
 
 log:
 	-docker logs nginx
